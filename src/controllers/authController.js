@@ -3,12 +3,11 @@ import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-export const signup = async (req, res) => {
+export const signup = async (body) => {
     try {
         await connectDB();
 
-        const { username, email, password } = req.body;
-        console.log("Signup data received:", { username, email, password: password ? "****" : null });
+        const { username, email, password } = body;
 
         if (!username || !email || !password) {
             return {
@@ -48,11 +47,11 @@ export const signup = async (req, res) => {
     }
 };
 
-export const login = async (req,res) => {
+export const login = async (body) => {
     try{
         await connectDB();
 
-        const { email, password } = req.body;
+        const { email, password } = body;
 
         if(!email || !password){
             return {
@@ -77,12 +76,17 @@ export const login = async (req,res) => {
             }
         }
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+        const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
         return {
             status: 200,
             message: "Login successful",
-            token
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
         };
 
     } catch (error) {

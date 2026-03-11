@@ -3,10 +3,10 @@
 A modern, full-stack personal finance management application built with Next.js, MongoDB, and TailwindCSS. Track your expenses, manage budgets, and achieve your financial goals with an intuitive and responsive interface.
 
 ![Finance Tracker](https://img.shields.io/badge/Version-0.1.0-blue.svg)
-![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black)
-![React](https://img.shields.io/badge/React-19.2.3-blue)
+![Next.js](https://img.shields.io/badge/Next.js-15+-black)
+![React](https://img.shields.io/badge/React-18+-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-blue)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3+-blue)
 
 ## 🚀 Features
 
@@ -34,9 +34,9 @@ A modern, full-stack personal finance management application built with Next.js,
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework**: Next.js 16.1.6 (App Router)
-- **UI Library**: React 19.2.3
-- **Styling**: TailwindCSS 4
+- **Framework**: Next.js 15+ (App Router)
+- **UI Library**: React 18+
+- **Styling**: TailwindCSS 3+
 - **State Management**: React Context API
 - **Charts**: Chart.js / Recharts
 
@@ -54,7 +54,7 @@ A modern, full-stack personal finance management application built with Next.js,
 ## 📦 Installation
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 18+ (LTS recommended)
 - MongoDB Atlas account (or local MongoDB)
 - Git
 
@@ -88,17 +88,30 @@ pnpm dev
 Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## 📂 Project Structure
-```finance-tracker-web/
-├── components/          # Reusable React components
-├── pages/               # Next.js pages (App Router)
-├── api/                 # API routes for backend logic
-├── models/              # Mongoose models
-├── styles/              # TailwindCSS styles
-├── utils/               # Utility functions
-├── .env.local           # Environment variables
+```
+finance-tracker-web/
+├── public/              # Static assets
+├── src/
+│   ├── app/             # Next.js App Router pages and layouts
+│   │   ├── globals.css  # Global styles
+│   │   ├── layout.js    # Root layout
+│   │   ├── page.js      # Home page
+│   │   ├── api/         # API routes
+│   │   │   └── auth/    # Authentication endpoints
+│   │   ├── dashboard/   # Dashboard page
+│   │   ├── login/       # Login page
+│   │   └── signup/      # Signup page
+│   ├── components/      # Reusable React components
+│   ├── controllers/     # Business logic controllers
+│   ├── lib/             # Database and utility functions
+│   └── models/          # Mongoose data models
+├── eslint.config.mjs    # ESLint configuration
+├── jsconfig.json        # JavaScript configuration
+├── next.config.mjs      # Next.js configuration
 ├── package.json         # Project dependencies and scripts
+├── postcss.config.mjs   # PostCSS configuration
 ├── README.md            # Project documentation
-└── ...
+└── .env.local           # Environment variables (create this file)
 ``` 
 ## 🤝 Contributing
 Contributions are welcome! Please fork the repository and create a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.

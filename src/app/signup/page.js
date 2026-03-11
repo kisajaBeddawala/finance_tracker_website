@@ -29,7 +29,7 @@ export default function Signup() {
 
             const data = await res.json();
             if(res.ok){
-                router.push("/dashboard");
+                router.push("/login");
             } else {
                 console.error("Signup error:", data.message);
             }
@@ -46,15 +46,15 @@ export default function Signup() {
                 <form action="" onSubmit={handleSubmit}>
                     <div className="flex flex-col mb-5">
                         <label htmlFor="email" className=" mb-2 text-lg font-semibold">Email :</label>
-                        <input type="email" name="email" id="email" placeholder="Enter your email " className="bg-white/20 py-1 px-2 rounded" required/>
+                        <input type="email" name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email " className="bg-white/20 py-1 px-2 rounded" required/>
                     </div>
                     <div className="flex flex-col mb-5">
                         <label htmlFor="username" className=" mb-2 text-lg font-semibold">Username :</label>
-                        <input type="text" name="username" id="username" placeholder="Enter your username " className="bg-white/20 py-1 px-2 rounded" required/>
+                        <input type="text" name="username" id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Enter your username " className="bg-white/20 py-1 px-2 rounded" required/>
                     </div>
                     <div className="flex flex-col mb-10">
                         <label htmlFor="password" className=" mb-2 text-lg font-semibold">Password :</label>
-                        <input type="password" name="password" id="password" placeholder="Enter your password " className="bg-white/20 py-1 px-2 rounded" required/>
+                        <input type="password" name="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password " className="bg-white/20 py-1 px-2 rounded" required/>
                     </div>
                     
                     <button className="bg-blue-500 hover:bg-blue-800 text-white font-bold py-1.5 px-4 rounded transition duration-500 cursor-pointer text-align-center w-full">
