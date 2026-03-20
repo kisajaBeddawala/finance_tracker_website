@@ -11,16 +11,23 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
-        try{
-            const payload = JSON.parse(atob(storedToken.split(".")[1]));
-            if(payload.exp * 1000 > Date.now()){
-                setToken(storedToken);
-            } else {
+        if (storedToken) {
+            try{
+                const payload = JSON.parse(atob(storedToken.split(".")[1]));
+                if(payload.exp * 1000 > Date.now()){
+                    setToken(storedToken);
+                    setUser({ 
+                        id: payload.id, 
+                        email: payload.email,
+                        name: payload.name 
+                    });
+                } else {
+                    localStorage.removeItem("token");
+                }
+            } catch (error) {
+                console.error("Error parsing token:", error);
                 localStorage.removeItem("token");
             }
-        } catch (error) {
-            console.error("Error parsing token:", error);
-            localStorage.removeItem("token");
         }
         setLoading(false);
     }, []);

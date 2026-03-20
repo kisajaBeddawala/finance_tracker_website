@@ -1,4 +1,4 @@
-import { login, signup } from "@/controllers/authController";
+import { login, logout, signup } from "@/controllers/authController";
 
 export async function POST(req) {
     try{
@@ -10,6 +10,10 @@ export async function POST(req) {
 
         if (body.type === "login"){
             return Response.json(await login(body));
+        }
+
+        if (body.type === "logout"){
+            return Response.json(await logout());
         }
 
         return Response.json(

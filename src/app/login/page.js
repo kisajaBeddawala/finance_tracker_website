@@ -30,10 +30,11 @@ export default function Login() {
                 login(data.user, data.token);
                 router.push("/dashboard");
             } else {
-                console.error("Login error:", data.message);
+                alert("Login failed: " + data.message);
             }
         } catch (error) {
             console.error("Login error:", error);
+            alert("login failed. Please try again.");
         }
     };
 

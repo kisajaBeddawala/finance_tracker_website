@@ -97,3 +97,10 @@ export const login = async (body) => {
         };
     }
 }
+
+export const logout = async () => {
+    return {
+        status: 200,
+        message: "Logout successful"
+    }
+}

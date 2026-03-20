@@ -31,10 +31,11 @@ export default function Signup() {
             if(res.ok){
                 router.push("/login");
             } else {
-                console.error("Signup error:", data.message);
+                alert("Signup failed: " + data.message);
             }
         } catch (error) {
             console.error("Signup error:", error);
+            alert("Signup failed. Please try again.");
         }
     };
 
