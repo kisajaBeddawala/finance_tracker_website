@@ -1,10 +1,12 @@
 "use client";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../../context/AuthContext";
 import Link from "next/link";
 
 export default function DashboardPage() {
     const router = useRouter();
+    const { logout } = useAuth();
 
     const handleLogOut = async () => {
         try {
@@ -19,7 +21,7 @@ export default function DashboardPage() {
             });
             const data = await res.json();
             if (data.status === 200) {
-                localStorage.removeItem("token");
+                logout();
                 router.push("/login");
                 alert("Logout successful");
             } else {

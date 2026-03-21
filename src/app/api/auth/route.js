@@ -1,7 +1,9 @@
 import { login, logout, signup } from "@/controllers/authController";
+import { connectDB } from "@/lib/db";
 
 export async function POST(req) {
     try{
+        await connectDB();
         const body = await req.json();
 
         if (body.type === "signup"){

@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 
 export const signup = async (body) => {
     try {
-        await connectDB();
 
         const { username, email, password } = body;
 
@@ -49,7 +48,6 @@ export const signup = async (body) => {
 
 export const login = async (body) => {
     try{
-        await connectDB();
 
         const { email, password } = body;
 
