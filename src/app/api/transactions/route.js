@@ -7,8 +7,8 @@ export async function GET(req) {
         const result = await getTransactions(req);
         return Response.json(result, { status: result.status });
     }catch (error) {
-    console.error("GET /api/transactions error:", error);
-    return Response.json({ status: 500, message: "Server error" }, { status: 500 });
+        console.error("GET /api/transactions error:", error);
+        return Response.json({ status: 500, message: "Server error" }, { status: 500 });
   }
 }
 
