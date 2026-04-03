@@ -83,3 +83,82 @@ export async function createTransaction(req) {
         }
     }
 }
+
+export async function deleteTransaction(req,{ params }) {
+    try{    
+        const user = getUserFromRequest(req);
+        if (user.error) {
+            return user.error;
+        }   
+        const resolvedParams = await params;
+        const {id: transactionId} = resolvedParams;
+        const transaction = await Transaction.findOne({ _id: transactionId, userId: user.userId });
+        if (!transaction) {
+            return {
+                status: 404,
+                message: "Transaction not found"
+            }
+        }
+        await Transaction.deleteOne({ _id: transactionId });
+        return {
+            status: 200,
+            message: "Transaction deleted successfully"
+        }
+    
+    }catch(error){
+        console.error("Delete transaction error:", error);
+        return {
+            status: 500,
+            message: "Server error"
+        }
+    }
+}
+
+export async function updateTransaction(req,{params}){
+    try{
+        const user = getUserFromRequest(req);
+        if (user.error) {
+            return user.error;
+        }
+        const resolvedParams = await params;
+        const {id: transactionId} = resolvedParams;
+        const transaction = await Transaction.findOne({ _id: transactionId, userId: user.userId });
+        if (!transaction) {
+            return {
+                status: 404,
+                message: "Transaction not found"
+            }
+        }
+        const body = await req.json();
+        const { title, amount, type, note, date } = body;
+        if(!title || amount === undefined || !type){
+            return {
+                status: 400,
+                message: "Title, amount and type are required"
+            }
+        }
+        if (amount < 0) {
+            return {
+                status: 400,
+                message: "Amount must be a positive number"
+            }
+        }
+        transaction.title = title;
+        transaction.amount = amount;
+        transaction.type = type;
+        transaction.note = note;
+        transaction.date = date;
+        await transaction.save();
+        return {
+            status: 200,
+            message: "Transaction updated successfully",
+            transaction
+        }
+    }catch(error){
+        console.error("Update transaction error:", error);
+        return {
+            status: 500,
+            message: "Server error"
+        }
+    }
+}

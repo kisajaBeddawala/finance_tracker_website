@@ -1,5 +1,6 @@
 "use client"
 
+import EditForm from "@/components/EditForm";
 import { useEffect, useState } from "react"
 
 export default function Transactions() {
@@ -11,6 +12,7 @@ export default function Transactions() {
     const [date, setDate] = useState("");
 
     const [transactions, setTransactions] = useState([]);
+    const [editingTx, setEditingTx] = useState(null);
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -58,7 +60,8 @@ export default function Transactions() {
                     amount: parseFloat(amount),
                     type,
                     note,
-                    date                })
+                    date                
+                })
             });
             const data = await res.json();
             if (data.status === 201) {
@@ -77,6 +80,35 @@ export default function Transactions() {
             alert("Failed to add transaction. Please try again.");
         }
     }
+
+    async function handleDelete(id) {
+        try{
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("You must be logged in to delete transactions");
+                return;
+            }   
+            const res = await fetch(`/api/transactions/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            const data = await res.json();
+            if (data.status === 200) {
+                alert("Transaction deleted successfully");
+                setTransactions((prev) => prev.filter((tx) => tx._id !== id));
+            } else {
+                alert("Failed to delete transaction: " + data.message);
+            }
+        }catch(error){
+            console.error("Delete transaction error:", error);
+            alert("Failed to delete transaction. Please try again.");
+        }
+    }
+
+    
+
 
   return (
     <div>
@@ -124,11 +156,23 @@ export default function Transactions() {
                             <p className="text-md">{tx.type}</p>
                             <p className="text-md ">{tx.note}</p>
                             <p className="text-md ">{tx.date}</p>
+                            <div className="flex gap-3">
+                            <button className="bg-red-500 hover:bg-red-800 text-white font-bold py-1.5 px-4 rounded transition duration-500 cursor-pointer" onClick={() => handleDelete(tx._id)}>
+                                Delete
+                            </button>
+                            <button className="bg-green-500 hover:bg-green-800 text-white font-bold py-1.5 px-4 rounded transition duration-500 cursor-pointer" onClick={() => setEditingTx(tx)}>
+                                Edit
+                            </button>
+                            
+                            </div>
                         </div>
+
                     ))}
                 </div>
             )}
         </div>
+
+        {editingTx && <EditForm data={editingTx} onClose={() => setEditingTx(null)} setTransactions={setTransactions} />}
     </div>
   )
 }
