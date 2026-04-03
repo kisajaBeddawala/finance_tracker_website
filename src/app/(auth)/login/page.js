@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
     const router = useRouter();
@@ -55,6 +56,10 @@ export default function Login() {
                     
                     <button className="bg-blue-500 hover:bg-blue-800 text-white font-bold py-1.5 px-4 rounded transition duration-500 cursor-pointer text-align-center w-full">
                         Login
+                    </button>
+                    <p className="text-center my-2">Or</p>
+                    <button className="bg-white hover:bg-gray-100 text-black font-bold py-2 px-6 rounded-lg flex items-center gap-3 border shadow transition cursor-pointer" onClick={()=> signIn("google",{callbackUrl:"/dashboard"})}>
+                         <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo" className="w-6 h-6"/>Continue with Google
                     </button>
 
                     <p className="mt-3 text-md">Don&apos;t have an account? <Link href="/signup" className="text-blue-500 hover:text-blue-800">Sign Up</Link></p>
