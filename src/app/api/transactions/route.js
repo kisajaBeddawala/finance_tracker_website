@@ -1,6 +1,8 @@
 import { createTransaction, deleteTransaction, getTransactions } from "@/controllers/transactionsController";
 import { connectDB } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req) {
     try{
         await connectDB();

@@ -2,8 +2,10 @@
 
 import EditForm from "@/components/EditForm";
 import { useEffect, useState } from "react"
+import { useAuth } from "@/context/AuthContext";
 
 export default function Transactions() {
+    const { isGoogleUser } = useAuth();
 
     const [title, setTitle] = useState("");
     const [amount, setAmount] = useState("");
@@ -18,15 +20,18 @@ export default function Transactions() {
         const fetchTransactions = async () => {
             try {
                 const token = localStorage.getItem("token");
-                if (!token) {
+                if (!token && !isGoogleUser) {
                     alert("You must be logged in to view transactions");
                     return;
                 }
-                const res = await fetch("/api/transactions", {
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
+
+                // If token exists, pass it in headers. If GoogleUser, no token is needed in headers (uses cookies natively).
+                const headers = {};
+                if (token) {
+                    headers["Authorization"] = `Bearer ${token}`;
+                }
+
+                const res = await fetch("/api/transactions", { headers });
                 const data = await res.json();
                 if (data.status === 200) {
                     setTransactions(data.transactions);
@@ -39,22 +44,27 @@ export default function Transactions() {
             }
         };
         fetchTransactions();
-    }, []);
+    }, [isGoogleUser]);
 
     async function handleSubmit(e) {
         e.preventDefault();
         try{
             const token = localStorage.getItem("token");
-            if (!token) {
+            if (!token && !isGoogleUser) {
                 alert("You must be logged in to add transactions");
                 return;
             }
+
+            const headers = {
+                "Content-Type": "application/json"
+            };
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
+
             const res = await fetch("/api/transactions", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`  
-                },
+                headers,
                 body: JSON.stringify({
                     title,
                     amount: parseFloat(amount),
@@ -84,15 +94,19 @@ export default function Transactions() {
     async function handleDelete(id) {
         try{
             const token = localStorage.getItem("token");
-            if (!token) {
+            if (!token && !isGoogleUser) {
                 alert("You must be logged in to delete transactions");
                 return;
             }   
+
+            const headers = {};
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
+
             const res = await fetch(`/api/transactions/${id}`, {
                 method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
+                headers
             });
             const data = await res.json();
             if (data.status === 200) {

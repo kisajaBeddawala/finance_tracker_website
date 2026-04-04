@@ -1,7 +1,9 @@
 "use client"
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function EditForm({ data, onClose, setTransactions }) {
+    const { isGoogleUser } = useAuth();
 
     const [title, setTitle] = useState(data.title ?? "");
     const [amount, setAmount] = useState(data.amount ?? "");
@@ -12,16 +14,21 @@ export default function EditForm({ data, onClose, setTransactions }) {
     async function handleEdit(id) {
         try{
             const token = localStorage.getItem("token");
-            if (!token) {
+            if (!token && !isGoogleUser) {
                 alert("You must be logged in to edit transactions");
                 return;
             }   
+
+            const headers = {
+                "Content-Type": "application/json"
+            };
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
+
             const res = await fetch(`/api/transactions/${id}`, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
+                headers,
                 body: JSON.stringify({
                     title,
                     amount: parseFloat(amount),

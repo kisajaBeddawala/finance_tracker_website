@@ -1,13 +1,15 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+    const { data: session, status: nextAuthStatus } = useSession();
 
-    const [user,setUser] = useState(null);
+    const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [jwtLoading, setJwtLoading] = useState(true);
 
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
@@ -29,7 +31,7 @@ export function AuthProvider({ children }) {
                 localStorage.removeItem("token");
             }
         }
-        setLoading(false);
+        setJwtLoading(false);
     }, []);
 
     const login = (userData, authToken) => {
@@ -38,14 +40,27 @@ export function AuthProvider({ children }) {
         localStorage.setItem("token", authToken);
     }
 
-    const logout = () => {
+    const logout = async () => {
         setUser(null);
         setToken(null);
         localStorage.removeItem("token");
+        if (session) {
+            await signOut({ redirect: false });
+        }
     }
 
+    const isLoading = jwtLoading || nextAuthStatus === "loading";
+    const isAuthenticatedUser = user || session?.user;
+    
     return (
-        <AuthContext.Provider value={{ user, token, loading, login, logout }}>
+        <AuthContext.Provider value={{ 
+            user: isAuthenticatedUser, 
+            token, 
+            loading: isLoading, 
+            login, 
+            logout,
+            isGoogleUser: !!session?.user
+        }}>
             {children}
         </AuthContext.Provider>
     )

@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function MainLayout({ children }) {
     const router = useRouter();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
 
     const handleLogOut = async () => {
         try {
@@ -42,12 +42,21 @@ export default function MainLayout({ children }) {
                     <Link href="/dashboard" className="hover:text-gray-300 transition">Dashboard</Link>
                     <Link href="/transactions" className="hover:text-gray-300 transition">Transactions</Link>
                     <Link href="/reports" className="hover:text-gray-300 transition">Reports</Link>
-                    <button 
-                        onClick={handleLogOut} 
-                        className="bg-gray-800 hover:bg-black text-white font-bold py-2 px-5 rounded-lg transition duration-300 cursor-pointer shadow-sm"
-                    >
-                        Logout
-                    </button>
+                    
+                    {/* User Details & Logout */}
+                    <div className="ml-4 flex items-center gap-4 border-l border-white/30 pl-4">
+                        {user && (
+                            <span className="text-sm font-medium">
+                                Hi, {user.name || user.username || user.email}
+                            </span>
+                        )}
+                        <button 
+                            onClick={handleLogOut} 
+                            className="bg-gray-800 hover:bg-black text-white font-bold py-1.5 px-4 rounded-lg transition duration-300 cursor-pointer shadow-sm text-sm"
+                        >
+                            Logout
+                        </button>
+                    </div>
                 </div>
             </nav>
             <main>

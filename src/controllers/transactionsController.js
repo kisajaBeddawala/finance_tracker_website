@@ -1,9 +1,16 @@
 import verifyToken, { getTokenFromRequest } from "@/lib/auth";
 import Transaction from "@/models/Transaction";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
+async function getUserFromRequest(req) {
+    // Check NextAuth session (Google Login)
+    const session = await getServerSession(authOptions);
+    if (session?.user?.id) {
+        return { userId: session.user.id };
+    }
 
-
-function getUserFromRequest(req) {
+    // Fallback to custom JWT Token (Email Login)
     const token = getTokenFromRequest(req);
 
     if (!token) {
@@ -20,7 +27,7 @@ function getUserFromRequest(req) {
 
 export async function getTransactions(req) {
     try{
-        const user = getUserFromRequest(req);
+        const user = await getUserFromRequest(req);
         if (user.error) {
             return user.error;
         }
@@ -41,7 +48,7 @@ export async function getTransactions(req) {
 
 export async function createTransaction(req) {
     try{
-        const user = getUserFromRequest(req);
+        const user = await getUserFromRequest(req);
         if (user.error) {
             return user.error;
         }
@@ -86,7 +93,7 @@ export async function createTransaction(req) {
 
 export async function deleteTransaction(req,{ params }) {
     try{    
-        const user = getUserFromRequest(req);
+        const user = await getUserFromRequest(req);
         if (user.error) {
             return user.error;
         }   
@@ -116,7 +123,7 @@ export async function deleteTransaction(req,{ params }) {
 
 export async function updateTransaction(req,{params}){
     try{
-        const user = getUserFromRequest(req);
+        const user = await getUserFromRequest(req);
         if (user.error) {
             return user.error;
         }
