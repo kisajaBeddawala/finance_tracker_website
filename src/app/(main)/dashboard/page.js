@@ -1,16 +1,54 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { Bar, BarChart, Legend, Pie, PieChart, Tooltip, XAxis, YAxis, Cell } from "recharts";
+import { Bar, BarChart, Legend, Pie, PieChart, Tooltip, XAxis, YAxis, Cell, ResponsiveContainer } from "recharts";
+import { useAuth } from "../../../context/AuthContext";
+
+const COLORS = ["#4ade80", "#f87171"];
+
+const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-[#11111a] border border-white/10 p-4 rounded-xl shadow-2xl backdrop-blur-lg">
+                <p className="text-gray-200 font-semibold mb-3 border-b border-white/10 pb-2">{label}</p>
+                {payload.map((entry, index) => (
+                    <p key={index} className="text-md flex justify-between gap-6" style={{ color: entry.color }}>
+                        <span>{entry.name}</span>
+                        <span className="font-bold">${entry.value.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                    </p>
+                ))}
+            </div>
+        );
+    }
+    return null;
+};
+
+const CustomPieTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-[#11111a] border border-white/10 p-3 rounded-xl shadow-2xl backdrop-blur-lg text-center font-bold">
+                <p style={{ color: payload[0].payload.fill }}>
+                    {payload[0].name}: ${payload[0].value.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                </p>
+            </div>
+        );
+    }
+    return null;
+};
 
 export default function DashboardPage() {
     const [transactions, setTransactions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const { token } = useAuth();
 
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                const response = await fetch("/api/transactions");
+                const headers = {};
+                if (token) {
+                    headers["Authorization"] = `Bearer ${token}`;
+                }
+                const response = await fetch("/api/transactions", { headers });
                 const result = await response.json();
                 if (result.status === 200) {
                     setTransactions(result.transactions);
@@ -50,53 +88,100 @@ export default function DashboardPage() {
         { name: "Income", value: totalIncome },
         { name: "Expense", value: totalExpense },
     ];
-    
-    const COLORS = ["#82ca9d", "#ff7f7f"];
 
     return (
         <ProtectedRoute>
-            <div className="flex flex-col items-center h-screen gap-3 w-full p-6">
-                <h1 className="text-3xl font-bold my-5">Welcome to Your Dashboard</h1>
-                {isLoading ? (
-                    <p>Loading your data...</p>
-                ) : transactions.length === 0 ? (
-                    <p>No transaction data available yet.</p>
-                ) : (
-                    <div className="flex flex-col md:flex-row gap-10 w-full justify-center">
-                        <div className="flex flex-col items-center">
-                            <h2 className="text-xl font-semibold mb-4">Monthly Overview</h2>
-                            <BarChart width={500} height={300} data={barData}>
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Bar dataKey="income" fill="#82ca9d" name="Income" />
-                                <Bar dataKey="expense" fill="#ff7f7f" name="Expense" />
-                            </BarChart>
-                        </div>
+            <div className="relative min-h-screen bg-[#050505] text-white overflow-x-hidden font-sans pb-16 pt-6">
+                <div className="absolute top-[-20%] left-[-10%] w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] rounded-full bg-blue-600/10 blur-[100px] md:blur-[150px] mix-blend-screen pointer-events-none animate-pulse"></div>
+                <div className="absolute top-[20%] right-[-10%] w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] rounded-full bg-purple-600/10 blur-[100px] md:blur-[150px] mix-blend-screen pointer-events-none animate-pulse" style={{ animationDelay: '2s' }}></div>
 
-                        <div className="flex flex-col items-center">
-                            <h2 className="text-xl font-semibold mb-4">Income vs Expense</h2>
-                            <PieChart width={400} height={300}>
-                                <Pie
-                                    data={pieData}
-                                    cx="50%"
-                                    cy="50%"
-                                    dataKey="value"
-                                    nameKey="name"
-                                    outerRadius={100}
-                                    label
-                                >
-                                    {pieData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                                <Legend />
-                            </PieChart>
-                        </div>
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="mb-10">
+                        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+                            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-purple-600 bg-clip-text text-transparent">Dashboard</span> Overview
+                        </h1>
                     </div>
-                )}
+
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                        </div>
+                    ) : transactions.length === 0 ? (
+                        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 text-center shadow-2xl">
+                            <p className="text-xl text-gray-400">No transaction data available yet.</p>
+                            <p className="text-sm text-gray-500 mt-2">Start adding transactions to see your charts.</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-8">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-xl flex flex-col justify-center transition-transform hover:-translate-y-1">
+                                    <p className="text-gray-400 font-medium mb-1">Net Balance</p>
+                                    <h2 className="text-4xl font-bold text-white tracking-tight">
+                                        ${(totalIncome - totalExpense).toLocaleString(undefined, {minimumFractionDigits: 2})}
+                                    </h2>
+                                </div>
+                                <div className="bg-gradient-to-br from-[#112a1d] to-white/5 backdrop-blur-xl border border-[#4ade80]/30 p-6 rounded-3xl shadow-xl flex flex-col justify-center transition-transform hover:-translate-y-1">
+                                    <p className="text-[#4ade80] font-medium mb-1">Total Income</p>
+                                    <h2 className="text-4xl font-bold text-white tracking-tight">
+                                        ${totalIncome.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                                    </h2>
+                                </div>
+                                <div className="bg-gradient-to-br from-[#3b1515] to-white/5 backdrop-blur-xl border border-[#f87171]/30 p-6 rounded-3xl shadow-xl flex flex-col justify-center transition-transform hover:-translate-y-1">
+                                    <p className="text-[#f87171] font-medium mb-1">Total Expense</p>
+                                    <h2 className="text-4xl font-bold text-white tracking-tight">
+                                        ${totalExpense.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                                    </h2>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-2xl flex flex-col">
+                                    <h2 className="text-xl font-semibold mb-6 text-gray-200">Monthly Cashflow</h2>
+                                    <div style={{ width: '100%', height: 350 }}>
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                                <XAxis dataKey="name" stroke="#9ca3af" tick={{fill: '#9ca3af', fontSize: 13}} axisLine={false} tickLine={false} dy={10}/>
+                                                <YAxis stroke="#9ca3af" tick={{fill: '#9ca3af', fontSize: 13}} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`}/>
+                                                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255, 255, 255, 0.05)'}} />
+                                                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                                                <Bar dataKey="income" fill="#4ade80" name="Income" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                                                <Bar dataKey="expense" fill="#f87171" name="Expense" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-2xl flex flex-col">
+                                    <h2 className="text-xl font-semibold mb-6 text-gray-200 w-full text-left">Income vs Expense</h2>
+                                    <div style={{ width: '100%', height: 350 }} className="flex justify-center items-center">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <PieChart>
+                                                <Pie
+                                                    data={pieData}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={90}
+                                                    outerRadius={130}
+                                                    paddingAngle={5}
+                                                    dataKey="value"
+                                                    nameKey="name"
+                                                    stroke="rgba(255,255,255,0.1)"
+                                                    strokeWidth={2}
+                                                >
+                                                    {pieData.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip content={<CustomPieTooltip />} />
+                                                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </ProtectedRoute>
     );

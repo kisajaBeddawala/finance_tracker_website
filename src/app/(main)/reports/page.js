@@ -3,12 +3,14 @@
 import { useState } from "react"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
+import { useAuth } from "../../../context/AuthContext"
 
 export default function Reports(){
     const [month,setMonth] = useState("")
     const [year,setYear] = useState("")
 
     const [loading, setLoading] = useState(false)
+    const { token } = useAuth()
 
     const handleGenerateReport = async(e) => {
         e.preventDefault()
@@ -20,7 +22,11 @@ export default function Reports(){
 
         try {
             setLoading(true)
-            const res = await fetch("/api/transactions")
+            const headers = {}
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`
+            }
+            const res = await fetch("/api/transactions", { headers })
             const result = await res.json()
             
             if(result.status !== 200){
@@ -84,55 +90,69 @@ export default function Reports(){
     }  
 
     return (
-        <div className="flex flex-col items-center h-screen gap-3 w-full p-6">
-            <p className="text-lg">Here you can genarate your monthly report as a pdf</p>
-            <form className="flex gap-5 mt-10">
-                <div className="flex justify-center items-center gap-4">
-                    <label className="text-xl">Month</label>
-                    <select 
-                        value={month} 
-                        onChange={(e)=>setMonth(e.target.value)} 
-                        className="border-2 border-gray-600 bg-slate-800 text-white px-2 py-1 rounded"
+        <div className="flex flex-col items-center min-h-[80vh] w-full p-6 pt-10">
+            <div className="mb-10 text-center">
+                <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">
+                    <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-purple-600 bg-clip-text text-transparent">Financial</span> Reports
+                </h1>
+                <p className="text-lg text-gray-400">Generate your transaction history as a downloadable PDF.</p>
+            </div>
+            
+            <div className="bg-white/5 backdrop-blur-xl border border-white p-8 md:p-12 rounded-3xl shadow-2xl w-full max-w-xl flex flex-col items-center mt-2 relative overflow-hidden">
+                <form className="flex flex-col gap-6 mt-4 w-full" onSubmit={handleGenerateReport}>
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+                        <div className="flex flex-col w-full gap-2">
+                            <label className="text-sm font-medium text-gray-300 ml-1">Select Month</label>
+                            <select 
+                                value={month} 
+                                onChange={(e)=>setMonth(e.target.value)} 
+                                className="bg-[#11111a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all w-full cursor-pointer appearance-none"
+                            >
+                                <option value="" disabled className="text-gray-500">Pick a month...</option>
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div className="flex flex-col w-full gap-2">
+                            <label className="text-sm font-medium text-gray-300 ml-1">Select Year</label>
+                            <select 
+                                value={year} 
+                                onChange={(e)=>setYear(e.target.value)} 
+                                className="bg-[#11111a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all w-full cursor-pointer appearance-none"
+                            >
+                                <option value="" disabled className="text-gray-500">Pick a year...</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button 
+                        type="submit" 
+                        className={`mt-4 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all duration-300 transform ${loading || !year || !month ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] hover:-translate-y-0.5'}`}
+                        disabled={loading || !year || !month}
                     >
-                        <option value="" disabled>Select Month</option>
-                        <option value="1">January</option>
-                        <option value="2">February</option>
-                        <option value="3">March</option>
-                        <option value="4">April</option>
-                        <option value="5">May</option>
-                        <option value="6">June</option>
-                        <option value="7">July</option>
-                        <option value="8">August</option>
-                        <option value="9">September</option>
-                        <option value="10">October</option>
-                        <option value="11">November</option>
-                        <option value="12">December</option>
-                    </select>
-                </div>
-                <div className="flex justify-center items-center gap-4">
-                    <label className="text-xl">Year</label>
-                    <select 
-                        value={year} 
-                        onChange={(e)=>setYear(e.target.value)} 
-                        className="border-2 border-gray-600 bg-slate-800 text-white px-2 py-1 rounded"
-                    >
-                        <option value="" disabled>Select Year</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                        <option value="2028">2028</option>
-                    </select>
-                </div>
-                <button 
-                    type="submit" 
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md disabled:bg-gray-400" 
-                    onClick={handleGenerateReport}
-                    disabled={loading}
-                >
-                    {loading ? "Generating..." : "Generate Report"}
-                </button>
-            </form>
+                        {loading ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                Generating...
+                            </span>
+                        ) : "Download PDF Report"}
+                    </button>
+                </form>
+            </div>
         </div>
     )
 }

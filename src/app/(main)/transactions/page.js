@@ -25,7 +25,6 @@ export default function Transactions() {
                     return;
                 }
 
-                // If token exists, pass it in headers. If GoogleUser, no token is needed in headers (uses cookies natively).
                 const headers = {};
                 if (token) {
                     headers["Authorization"] = `Bearer ${token}`;
@@ -40,7 +39,6 @@ export default function Transactions() {
                 }
             } catch (error) {
                 console.error("Fetch transactions error:", error);
-                alert("Failed to fetch transactions. Please try again.");
             }
         };
         fetchTransactions();
@@ -75,7 +73,6 @@ export default function Transactions() {
             });
             const data = await res.json();
             if (data.status === 201) {
-                alert("Transaction added successfully");
                 setTitle("");
                 setAmount("");
                 setType("income");
@@ -92,6 +89,7 @@ export default function Transactions() {
     }
 
     async function handleDelete(id) {
+        if (!confirm("Are you sure you want to delete this transaction?")) return;
         try{
             const token = localStorage.getItem("token");
             if (!token && !isGoogleUser) {
@@ -110,7 +108,6 @@ export default function Transactions() {
             });
             const data = await res.json();
             if (data.status === 200) {
-                alert("Transaction deleted successfully");
                 setTransactions((prev) => prev.filter((tx) => tx._id !== id));
             } else {
                 alert("Failed to delete transaction: " + data.message);
@@ -121,69 +118,114 @@ export default function Transactions() {
         }
     }
 
-    
-
-
   return (
-    <div>
-        <h1 className="text-3xl font-bold my-5 text-center">Transactions Page</h1>
-        <form className="flex flex-col gap-4 justify-center items-start p-8 my-2 mx-5" onSubmit={handleSubmit}>
-            <div className="flex gap-3">
-                <label htmlFor="title" className="block text-white font-bold text-xl">Title :</label>
-                <input type='text' id="title" placeholder="Transaction Title" className='border border-gray-300 rounded py-2 px-4' value={title} onChange={(e) => setTitle(e.target.value)} />
-            </div>
-            <div className="flex gap-3 ">
-                <label htmlFor="amount" className="block text-white font-bold text-xl">Amount :</label>
-                <input type='text' id="amount" placeholder="Transaction Amount" className='border border-gray-300 rounded py-2 px-4' value={amount} onChange={(e) => setAmount(e.target.value)} />
-            </div>
-            <div className="flex gap-3">
-                <label htmlFor="type" className="block text-white font-bold text-xl">Type :</label>
-                <select id="type" className='border border-gray-300 rounded py-2 px-4' value={type} onChange={(e) => setType(e.target.value)}>
-                    <option value="income" className="bg-black">Income</option>
-                    <option value="expense" className="bg-black">Expense</option>
-                </select>
-            </div>
-
-            <div className="flex gap-3 ">
-                <label htmlFor="note" className="block text-white font-bold text-xl">Note :</label>
-                <input type='text' id="note" placeholder="Transaction Note" className='border border-gray-300 rounded py-2 px-4' value={note} onChange={(e) => setNote(e.target.value)} />
-            </div>
-            <div className="flex gap-3 ">
-                <label htmlFor="date" className="block text-white font-bold text-xl">Date :</label>
-                <input type='date' id="date" className='border border-gray-300 rounded py-2 px-4' value={date} onChange={(e) => setDate(e.target.value)} />
-            </div>
-            <button className="bg-blue-500 hover:bg-blue-800 text-white font-bold py-1.5 px-4 rounded transition duration-500 cursor-pointer text-align-center">
-                Add Transaction
-            </button>
-        </form>
-
-        <div className="flex flex-col justify-center my-5">
-            <h1 className="text-3xl font-bold text-center underline">Transaction History</h1>
-            {transactions.length === 0 ? (
-                <p className="text-center mt-5">No transactions found. Please add some transactions.</p>
-            ) : (
-                <div className="flex flex-col gap-4 mt-5">
-                    {transactions.map((tx) => (
-                        <div key={tx._id} className="bg-white p-4 rounded text-black">
-                            <h2 className="text-xl font-bold">{tx.title}</h2>
-                            <p className="text-lg">${tx.amount.toFixed(2)}</p>
-                            <p className="text-md">{tx.type}</p>
-                            <p className="text-md ">{tx.note}</p>
-                            <p className="text-md ">{tx.date}</p>
-                            <div className="flex gap-3">
-                            <button className="bg-red-500 hover:bg-red-800 text-white font-bold py-1.5 px-4 rounded transition duration-500 cursor-pointer" onClick={() => handleDelete(tx._id)}>
-                                Delete
-                            </button>
-                            <button className="bg-green-500 hover:bg-green-800 text-white font-bold py-1.5 px-4 rounded transition duration-500 cursor-pointer" onClick={() => setEditingTx(tx)}>
-                                Edit
-                            </button>
-                            
+    <div className="flex flex-col items-center w-full px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
+        <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 relative z-10">
+            
+            <div className="lg:col-span-4 flex flex-col items-center order-2 lg:order-1">
+                <div className="w-full sticky top-28 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
+                    <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-b border-white/10 py-5 px-6">
+                        <h2 className="text-2xl font-bold text-white tracking-tight">Add Transaction</h2>
+                        <p className="text-sm text-gray-400 mt-1">Record a new income or expense</p>
+                    </div>
+                    
+                    <form className="p-6 flex flex-col gap-5" onSubmit={handleSubmit}>
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="title" className="text-sm font-medium text-gray-300 ml-1">Title</label>
+                            <input type='text' id="title" placeholder="e.g. Grocery, Salary" className='bg-[#11111a] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all' value={title} onChange={(e) => setTitle(e.target.value)} required/>
+                        </div>
+                        
+                        <div className="flex flex-col gap-2 ">
+                            <label htmlFor="amount" className="text-sm font-medium text-gray-300 ml-1">Amount ($)</label>
+                            <input type='number' step="0.01" min="0" id="amount" placeholder="0.00" className='bg-[#11111a] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all' value={amount} onChange={(e) => setAmount(e.target.value)} required/>
+                        </div>
+                        
+                        <div className="flex gap-4">
+                            <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="type" className="text-sm font-medium text-gray-300 ml-1">Type</label>
+                                <select id="type" className='bg-[#11111a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none cursor-pointer' value={type} onChange={(e) => setType(e.target.value)}>
+                                    <option value="income" className="bg-[#11111a]">Income</option>
+                                    <option value="expense" className="bg-[#11111a]">Expense</option>
+                                </select>
+                            </div>
+                            <div className="flex flex-col gap-2 w-full">
+                                <label htmlFor="date" className="text-sm font-medium text-gray-300 ml-1">Date</label>
+                                <input type='date' id="date" className='bg-[#11111a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all min-h-[50px] appearance-none' value={date} onChange={(e) => setDate(e.target.value)} required/>
                             </div>
                         </div>
 
-                    ))}
+                        <div className="flex flex-col gap-2 ">
+                            <label htmlFor="note" className="text-sm font-medium text-gray-300 ml-1">Note (Optional)</label>
+                            <textarea id="note" placeholder="Write a short description..." className='bg-[#11111a] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all min-h-[80px] resize-none' value={note} onChange={(e) => setNote(e.target.value)} />
+                        </div>
+                        
+                        <button className="mt-2 w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] transition-all duration-300 transform hover:-translate-y-0.5">
+                            Add Transaction
+                        </button>
+                    </form>
                 </div>
-            )}
+            </div>
+
+            <div className="lg:col-span-8 flex flex-col order-1 lg:order-2">
+                <div className="flex justify-between items-end mb-6 border-b border-white/10 pb-4">
+                    <h1 className="text-3xl font-extrabold tracking-tight">Record <span className="text-purple-400">History</span></h1>
+                    <span className="bg-white/10 px-3 py-1 rounded-full text-sm font-medium text-gray-300">{transactions.length} items</span>
+                </div>
+
+                {transactions.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center p-12 bg-white/5 border border-white/10 rounded-3xl text-center backdrop-blur-sm">
+                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                            <span className="text-2xl opacity-50">📋</span>
+                        </div>
+                        <h3 className="text-xl font-semibold mb-2">No Transactions Yet</h3>
+                        <p className="text-gray-400 max-w-sm">When you add an income or expense, they will elegantly appear in this list.</p>
+                    </div>
+                ) : (
+                    <div className="flex flex-col gap-4">
+                        {transactions.map((tx) => (
+                            <div key={tx._id} className="group flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 p-5 rounded-2xl transition-all duration-300 shadow-md">
+                                
+                                <div className="flex flex-1 min-w-0 items-center justify-start gap-4">
+                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${tx.type === 'income' ? 'bg-[#4ade80]/20 text-[#4ade80]' : 'bg-[#f87171]/20 text-[#f87171]'}`}>
+                                        {tx.type === 'income' ? '↓' : '↑'}
+                                    </div>
+                                    <div className="flex-1 min-w-0 flex flex-col">
+                                        <h2 className="text-lg font-bold text-white truncate w-full">{tx.title}</h2>
+                                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-gray-400 mt-1">
+                                            <span>{new Date(tx.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric'})}</span>
+                                            {tx.note && (
+                                                <>
+                                                    <span className="w-1 h-1 rounded-full bg-gray-500 hidden sm:block flex-shrink-0"></span>
+                                                    <span className="truncate max-w-[200px]">{tx.note}</span>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row items-end sm:items-center justify-between sm:justify-end gap-3 sm:gap-6 mt-4 sm:mt-0 w-full sm:w-auto">
+                                    
+                                    <div className="flex justify-between sm:justify-end w-full sm:w-auto items-center sm:order-2">
+                                        <p className={`text-xl font-extrabold ${tx.type === 'income' ? 'text-[#4ade80]' : 'text-[#f87171]'}`}>
+                                            {tx.type === 'income' ? '+' : '-'}${tx.amount.toFixed(2)}
+                                        </p>
+                                    </div>
+
+                                    <div className="flex gap-2 w-full sm:w-auto justify-end flex-shrink-0 sm:order-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
+                                        <button className="flex-1 sm:flex-none bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium" onClick={() => setEditingTx(tx)}>
+                                            Edit
+                                        </button>
+                                        <button className="flex-1 sm:flex-none bg-red-500/20 hover:bg-red-500/40 text-red-400 px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium" onClick={() => handleDelete(tx._id)}>
+                                            Delete
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
 
         {editingTx && <EditForm data={editingTx} onClose={() => setEditingTx(null)} setTransactions={setTransactions} />}
