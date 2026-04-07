@@ -90,23 +90,23 @@ export default function Reports(){
     }  
 
     return (
-        <div className="flex flex-col items-center min-h-[80vh] w-full p-6 pt-10">
+        <div className="flex flex-col items-center min-h-[80vh] w-full p-6 pt-10 transition-colors">
             <div className="mb-10 text-center">
-                <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">
-                    <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-purple-600 bg-clip-text text-transparent">Financial</span> Reports
+                <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3 text-gray-900 dark:text-white transition-colors">
+                    <span className="bg-gradient-to-r from-blue-600 via-purple-500 to-purple-600 dark:from-blue-400 dark:via-purple-400 dark:to-purple-600 bg-clip-text text-transparent">Financial</span> Reports
                 </h1>
-                <p className="text-lg text-gray-400">Generate your transaction history as a downloadable PDF.</p>
+                <p className="text-lg text-gray-600 dark:text-gray-400 transition-colors">Generate your transaction history as a downloadable PDF.</p>
             </div>
             
-            <div className="bg-white/5 backdrop-blur-xl border border-white p-8 md:p-12 rounded-3xl shadow-2xl w-full max-w-xl flex flex-col items-center mt-2 relative overflow-hidden">
+            <div className="bg-white dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 p-8 md:p-12 rounded-3xl shadow-xl dark:shadow-2xl w-full max-w-xl flex flex-col items-center mt-2 relative overflow-hidden transition-colors">
                 <form className="flex flex-col gap-6 mt-4 w-full" onSubmit={handleGenerateReport}>
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
                         <div className="flex flex-col w-full gap-2">
-                            <label className="text-sm font-medium text-gray-300 ml-1">Select Month</label>
+                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1 transition-colors">Select Month</label>
                             <select 
                                 value={month} 
                                 onChange={(e)=>setMonth(e.target.value)} 
-                                className="bg-[#11111a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all w-full cursor-pointer appearance-none"
+                                className="bg-gray-50 dark:bg-[#11111a] border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all w-full cursor-pointer appearance-none"
                             >
                                 <option value="" disabled className="text-gray-500">Pick a month...</option>
                                 <option value="1">January</option>
@@ -124,11 +124,11 @@ export default function Reports(){
                             </select>
                         </div>
                         <div className="flex flex-col w-full gap-2">
-                            <label className="text-sm font-medium text-gray-300 ml-1">Select Year</label>
+                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1 transition-colors">Select Year</label>
                             <select 
                                 value={year} 
                                 onChange={(e)=>setYear(e.target.value)} 
-                                className="bg-[#11111a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all w-full cursor-pointer appearance-none"
+                                className="bg-gray-50 dark:bg-[#11111a] border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all w-full cursor-pointer appearance-none"
                             >
                                 <option value="" disabled className="text-gray-500">Pick a year...</option>
                                 <option value="2024">2024</option>
@@ -141,7 +141,7 @@ export default function Reports(){
                     </div>
                     <button 
                         type="submit" 
-                        className={`mt-4 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all duration-300 transform ${loading || !year || !month ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] hover:-translate-y-0.5'}`}
+                        className={`mt-4 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_4px_14px_0_rgba(59,130,246,0.2)] dark:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all duration-300 transform ${loading || !year || !month ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-[0_6px_20px_rgba(139,92,246,0.3)] dark:hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] hover:-translate-y-0.5'}`}
                         disabled={loading || !year || !month}
                     >
                         {loading ? (

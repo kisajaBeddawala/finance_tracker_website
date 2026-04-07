@@ -9,8 +9,8 @@ const COLORS = ["#4ade80", "#f87171"];
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-[#11111a] border border-white/10 p-4 rounded-xl shadow-2xl backdrop-blur-lg">
-                <p className="text-gray-200 font-semibold mb-3 border-b border-white/10 pb-2">{label}</p>
+            <div className="bg-white dark:bg-[#11111a] border border-gray-200 dark:border-white/10 p-4 rounded-xl shadow-xl dark:shadow-2xl backdrop-blur-lg transition-colors">
+                <p className="text-gray-800 dark:text-gray-200 font-semibold mb-3 border-b border-gray-200 dark:border-white/10 pb-2">{label}</p>
                 {payload.map((entry, index) => (
                     <p key={index} className="text-md flex justify-between gap-6" style={{ color: entry.color }}>
                         <span>{entry.name}</span>
@@ -26,7 +26,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 const CustomPieTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-[#11111a] border border-white/10 p-3 rounded-xl shadow-2xl backdrop-blur-lg text-center font-bold">
+            <div className="bg-white dark:bg-[#11111a] border border-gray-200 dark:border-white/10 p-3 rounded-xl shadow-xl dark:shadow-2xl backdrop-blur-lg text-center font-bold transition-colors">
                 <p style={{ color: payload[0].payload.fill }}>
                     {payload[0].name}: ${payload[0].value.toLocaleString(undefined, {minimumFractionDigits: 2})}
                 </p>
@@ -91,14 +91,11 @@ export default function DashboardPage() {
 
     return (
         <ProtectedRoute>
-            <div className="relative min-h-screen bg-[#050505] text-white overflow-x-hidden font-sans pb-16 pt-6">
-                <div className="absolute top-[-20%] left-[-10%] w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] rounded-full bg-blue-600/10 blur-[100px] md:blur-[150px] mix-blend-screen pointer-events-none animate-pulse"></div>
-                <div className="absolute top-[20%] right-[-10%] w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] rounded-full bg-purple-600/10 blur-[100px] md:blur-[150px] mix-blend-screen pointer-events-none animate-pulse" style={{ animationDelay: '2s' }}></div>
-
+            <div className="relative min-h-screen bg-transparent pb-16 pt-6 transition-colors">
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="mb-10">
-                        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-                            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-purple-600 bg-clip-text text-transparent">Dashboard</span> Overview
+                        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white transition-colors">
+                            <span className="bg-gradient-to-r from-blue-600 via-purple-500 to-purple-600 dark:from-blue-400 dark:via-purple-400 dark:to-purple-600 bg-clip-text text-transparent">Dashboard</span> Overview
                         </h1>
                     </div>
 
@@ -107,42 +104,42 @@ export default function DashboardPage() {
                             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
                         </div>
                     ) : transactions.length === 0 ? (
-                        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 text-center shadow-2xl">
-                            <p className="text-xl text-gray-400">No transaction data available yet.</p>
+                        <div className="bg-white dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-3xl p-10 text-center shadow-lg dark:shadow-2xl transition-colors">
+                            <p className="text-xl text-gray-600 dark:text-gray-400 font-medium">No transaction data available yet.</p>
                             <p className="text-sm text-gray-500 mt-2">Start adding transactions to see your charts.</p>
                         </div>
                     ) : (
                         <div className="space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-xl flex flex-col justify-center transition-transform hover:-translate-y-1">
-                                    <p className="text-gray-400 font-medium mb-1">Net Balance</p>
-                                    <h2 className="text-4xl font-bold text-white tracking-tight">
+                                <div className="bg-white dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 p-6 rounded-3xl shadow-lg dark:shadow-xl flex flex-col justify-center transition-all hover:-translate-y-1">
+                                    <p className="text-gray-600 dark:text-gray-400 font-medium mb-1 transition-colors">Net Balance</p>
+                                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
                                         ${(totalIncome - totalExpense).toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </h2>
                                 </div>
-                                <div className="bg-gradient-to-br from-[#112a1d] to-white/5 backdrop-blur-xl border border-[#4ade80]/30 p-6 rounded-3xl shadow-xl flex flex-col justify-center transition-transform hover:-translate-y-1">
-                                    <p className="text-[#4ade80] font-medium mb-1">Total Income</p>
-                                    <h2 className="text-4xl font-bold text-white tracking-tight">
+                                <div className="bg-gradient-to-br from-green-50 dark:from-[#112a1d] to-white dark:to-white/5 backdrop-blur-xl border border-green-200 dark:border-[#4ade80]/30 p-6 rounded-3xl shadow-lg dark:shadow-xl flex flex-col justify-center transition-all hover:-translate-y-1">
+                                    <p className="text-green-700 dark:text-[#4ade80] font-medium mb-1 transition-colors">Total Income</p>
+                                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
                                         ${totalIncome.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </h2>
                                 </div>
-                                <div className="bg-gradient-to-br from-[#3b1515] to-white/5 backdrop-blur-xl border border-[#f87171]/30 p-6 rounded-3xl shadow-xl flex flex-col justify-center transition-transform hover:-translate-y-1">
-                                    <p className="text-[#f87171] font-medium mb-1">Total Expense</p>
-                                    <h2 className="text-4xl font-bold text-white tracking-tight">
+                                <div className="bg-gradient-to-br from-red-50 dark:from-[#3b1515] to-white dark:to-white/5 backdrop-blur-xl border border-red-200 dark:border-[#f87171]/30 p-6 rounded-3xl shadow-lg dark:shadow-xl flex flex-col justify-center transition-all hover:-translate-y-1">
+                                    <p className="text-red-600 dark:text-[#f87171] font-medium mb-1 transition-colors">Total Expense</p>
+                                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
                                         ${totalExpense.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </h2>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-2xl flex flex-col">
-                                    <h2 className="text-xl font-semibold mb-6 text-gray-200">Monthly Cashflow</h2>
+                                <div className="bg-white dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 p-6 rounded-3xl shadow-lg dark:shadow-2xl flex flex-col transition-colors">
+                                    <h2 className="text-xl font-semibold mb-6 text-gray-800 dark:text-gray-200 transition-colors">Monthly Cashflow</h2>
                                     <div style={{ width: '100%', height: 350 }}>
                                         <ResponsiveContainer width="100%" height="100%">
                                             <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                                 <XAxis dataKey="name" stroke="#9ca3af" tick={{fill: '#9ca3af', fontSize: 13}} axisLine={false} tickLine={false} dy={10}/>
                                                 <YAxis stroke="#9ca3af" tick={{fill: '#9ca3af', fontSize: 13}} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`}/>
-                                                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255, 255, 255, 0.05)'}} />
+                                                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(156, 163, 175, 0.1)'}} />
                                                 <Legend wrapperStyle={{ paddingTop: "20px" }} />
                                                 <Bar dataKey="income" fill="#4ade80" name="Income" radius={[4, 4, 0, 0]} maxBarSize={40} />
                                                 <Bar dataKey="expense" fill="#f87171" name="Expense" radius={[4, 4, 0, 0]} maxBarSize={40} />
@@ -151,8 +148,8 @@ export default function DashboardPage() {
                                     </div>
                                 </div>
 
-                                <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-2xl flex flex-col">
-                                    <h2 className="text-xl font-semibold mb-6 text-gray-200 w-full text-left">Income vs Expense</h2>
+                                <div className="bg-white dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 p-6 rounded-3xl shadow-lg dark:shadow-2xl flex flex-col transition-colors">
+                                    <h2 className="text-xl font-semibold mb-6 text-gray-800 dark:text-gray-200 w-full text-left transition-colors">Income vs Expense</h2>
                                     <div style={{ width: '100%', height: 350 }} className="flex justify-center items-center">
                                         <ResponsiveContainer width="100%" height="100%">
                                             <PieChart>
@@ -165,8 +162,7 @@ export default function DashboardPage() {
                                                     paddingAngle={5}
                                                     dataKey="value"
                                                     nameKey="name"
-                                                    stroke="rgba(255,255,255,0.1)"
-                                                    strokeWidth={2}
+                                                    stroke="none"
                                                 >
                                                     {pieData.map((entry, index) => (
                                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

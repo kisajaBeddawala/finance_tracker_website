@@ -52,30 +52,49 @@ export default function EditForm({ data, onClose, setTransactions }) {
     }
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4 transition-opacity">
-            <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative text-black">
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex justify-center items-center z-50 p-4 transition-colors mt-10">
+            <div className="bg-white dark:bg-[#11111a] p-8 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-white/10 relative transition-colors">
                 <button 
                     onClick={onClose} 
-                    className="absolute top-3 right-4 text-black hover:text-blue-500 font-bold text-xl cursor-pointer"
+                    className="absolute top-4 right-5 text-gray-500 dark:text-gray-400 hover:text-blue-500 transition-colors font-bold text-2xl cursor-pointer"
                 >
                     &times;
                 </button>
-                <h2 className="text-2xl font-bold mb-6 text-black text-center">Edit Transaction</h2>
-                <form className="flex flex-col gap-4 text-black">
-                    <input type='text' id="title" placeholder="Transaction Title" className='border border-gray-600 rounded py-2 px-4 focus:outline-none focus:border-blue-500' value={title} onChange={(e) => setTitle(e.target.value)} />
-                    <input type='number' id="amount" placeholder="Transaction Amount" className='border border-gray-600 rounded py-2 px-4 focus:outline-none focus:border-blue-500' value={amount} onChange={(e) => setAmount(e.target.value)} />
-                    <select id="type" className='border border-gray-600 rounded py-2 px-4 focus:outline-none focus:border-blue-500' value={type} onChange={(e) => setType(e.target.value)}>
-                        <option value="income" className="bg-white text-black">Income</option>
-                        <option value="expense" className="bg-white text-black">Expense</option>
-                    </select>
-                    <input type='text' id="note" placeholder="Transaction Note" className='border border-gray-600 rounded py-2 px-4 focus:outline-none focus:border-blue-500' value={note} onChange={(e) => setNote(e.target.value)} />
-                    <input type='date' id="date" className='border border-gray-600 rounded py-2 px-4 focus:outline-none focus:border-blue-500' value={date} onChange={(e) => setDate(e.target.value)} />
+                <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white text-center transition-colors">Edit Transaction</h2>
+                <form className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1">
+                        <label htmlFor="edit-title" className="text-xs font-semibold text-gray-600 dark:text-gray-400 ml-1">Title</label>
+                        <input type='text' id="edit-title" placeholder="Transaction Title" className='bg-gray-50 dark:bg-black/20 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white rounded-xl py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all' value={title} onChange={(e) => setTitle(e.target.value)} />
+                    </div>
+                    
+                    <div className="flex flex-col gap-1">
+                        <label htmlFor="edit-amount" className="text-xs font-semibold text-gray-600 dark:text-gray-400 ml-1">Amount</label>
+                        <input type='number' id="edit-amount" placeholder="Transaction Amount" className='bg-gray-50 dark:bg-black/20 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white rounded-xl py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all' value={amount} onChange={(e) => setAmount(e.target.value)} />
+                    </div>
+                    
+                    <div className="flex flex-col gap-1">
+                        <label htmlFor="edit-type" className="text-xs font-semibold text-gray-600 dark:text-gray-400 ml-1">Type</label>
+                        <select id="edit-type" className='bg-gray-50 dark:bg-black/20 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white rounded-xl py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none cursor-pointer' value={type} onChange={(e) => setType(e.target.value)}>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                        <label htmlFor="edit-note" className="text-xs font-semibold text-gray-600 dark:text-gray-400 ml-1">Note</label>
+                        <input type='text' id="edit-note" placeholder="Transaction Note" className='bg-gray-50 dark:bg-black/20 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white rounded-xl py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all' value={note} onChange={(e) => setNote(e.target.value)} />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                        <label htmlFor="edit-date" className="text-xs font-semibold text-gray-600 dark:text-gray-400 ml-1">Date</label>
+                        <input type='date' id="edit-date" className='bg-gray-50 dark:bg-black/20 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white rounded-xl py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all min-h-[50px] appearance-none' value={date} onChange={(e) => setDate(e.target.value)} />
+                    </div>
                     
                     <div className="flex justify-end gap-3 mt-4">
-                        <button type="button" onClick={onClose} className="bg-black hover:bg-gray-600 text-white font-bold py-2 px-6 rounded transition duration-300 cursor-pointer">
+                        <button type="button" onClick={onClose} className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold py-3 px-6 rounded-xl transition duration-300 cursor-pointer">
                             Cancel
                         </button>
-                        <button type="button" onClick={() => handleEdit(data._id)} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded transition duration-300 cursor-pointer">
+                        <button type="button" onClick={() => handleEdit(data._id)} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 cursor-pointer">
                             Update
                         </button>
                     </div>
