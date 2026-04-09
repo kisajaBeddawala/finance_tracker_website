@@ -93,9 +93,9 @@ export default function DashboardPage() {
         <ProtectedRoute>
             <div className="relative min-h-screen bg-transparent pb-16 pt-6 transition-colors">
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="mb-10">
-                        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white transition-colors">
-                            <span className="bg-gradient-to-r from-blue-600 via-purple-500 to-purple-600 dark:from-blue-400 dark:via-purple-400 dark:to-purple-600 bg-clip-text text-transparent">Dashboard</span> Overview
+                    <div className="mb-8 md:mb-10">
+                        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white transition-colors">
+                            <span className="bg-linear-to-r from-blue-600 via-purple-500 to-purple-600 dark:from-blue-400 dark:via-purple-400 dark:to-purple-600 bg-clip-text text-transparent">Dashboard</span> Overview
                         </h1>
                     </div>
 
@@ -117,13 +117,13 @@ export default function DashboardPage() {
                                         ${(totalIncome - totalExpense).toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </h2>
                                 </div>
-                                <div className="bg-gradient-to-br from-green-50 dark:from-[#112a1d] to-white dark:to-white/5 backdrop-blur-xl border border-green-200 dark:border-[#4ade80]/30 p-6 rounded-3xl shadow-lg dark:shadow-xl flex flex-col justify-center transition-all hover:-translate-y-1">
+                                <div className="bg-linear-to-br from-green-50 dark:from-[#112a1d] to-white dark:to-white/5 backdrop-blur-xl border border-green-200 dark:border-[#4ade80]/30 p-6 rounded-3xl shadow-lg dark:shadow-xl flex flex-col justify-center transition-all hover:-translate-y-1">
                                     <p className="text-green-700 dark:text-[#4ade80] font-medium mb-1 transition-colors">Total Income</p>
                                     <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
                                         ${totalIncome.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </h2>
                                 </div>
-                                <div className="bg-gradient-to-br from-red-50 dark:from-[#3b1515] to-white dark:to-white/5 backdrop-blur-xl border border-red-200 dark:border-[#f87171]/30 p-6 rounded-3xl shadow-lg dark:shadow-xl flex flex-col justify-center transition-all hover:-translate-y-1">
+                                <div className="bg-linear-to-br from-red-50 dark:from-[#3b1515] to-white dark:to-white/5 backdrop-blur-xl border border-red-200 dark:border-[#f87171]/30 p-6 rounded-3xl shadow-lg dark:shadow-xl flex flex-col justify-center transition-all hover:-translate-y-1">
                                     <p className="text-red-600 dark:text-[#f87171] font-medium mb-1 transition-colors">Total Expense</p>
                                     <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
                                         ${totalExpense.toLocaleString(undefined, {minimumFractionDigits: 2})}
@@ -134,7 +134,7 @@ export default function DashboardPage() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 <div className="bg-white dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 p-6 rounded-3xl shadow-lg dark:shadow-2xl flex flex-col transition-colors">
                                     <h2 className="text-xl font-semibold mb-6 text-gray-800 dark:text-gray-200 transition-colors">Monthly Cashflow</h2>
-                                    <div style={{ width: '100%', height: 350 }}>
+                                    <div className="w-full h-70 sm:h-80 md:h-87.5">
                                         <ResponsiveContainer width="100%" height="100%">
                                             <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                                 <XAxis dataKey="name" stroke="#9ca3af" tick={{fill: '#9ca3af', fontSize: 13}} axisLine={false} tickLine={false} dy={10}/>
@@ -150,15 +150,15 @@ export default function DashboardPage() {
 
                                 <div className="bg-white dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 p-6 rounded-3xl shadow-lg dark:shadow-2xl flex flex-col transition-colors">
                                     <h2 className="text-xl font-semibold mb-6 text-gray-800 dark:text-gray-200 w-full text-left transition-colors">Income vs Expense</h2>
-                                    <div style={{ width: '100%', height: 350 }} className="flex justify-center items-center">
+                                    <div className="w-full h-80 sm:h-85 md:h-90 flex justify-center items-center">
                                         <ResponsiveContainer width="100%" height="100%">
                                             <PieChart>
                                                 <Pie
                                                     data={pieData}
                                                     cx="50%"
-                                                    cy="50%"
-                                                    innerRadius={90}
-                                                    outerRadius={130}
+                                                    cy="46%"
+                                                    innerRadius="42%"
+                                                    outerRadius="68%"
                                                     paddingAngle={5}
                                                     dataKey="value"
                                                     nameKey="name"
@@ -169,7 +169,7 @@ export default function DashboardPage() {
                                                     ))}
                                                 </Pie>
                                                 <Tooltip content={<CustomPieTooltip />} />
-                                                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                                                <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: "12px" }} />
                                             </PieChart>
                                         </ResponsiveContainer>
                                     </div>

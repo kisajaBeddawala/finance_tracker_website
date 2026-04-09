@@ -44,11 +44,11 @@ export default function MainLayout({ children }) {
             <div className="fixed top-[-20%] left-[-10%] w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] rounded-full bg-blue-600/10 blur-[150px] mix-blend-screen pointer-events-none animate-pulse -z-10"></div>
             <div className="fixed bottom-[-20%] right-[-10%] w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] rounded-full bg-purple-600/10 blur-[150px] mix-blend-screen pointer-events-none animate-pulse -z-10" style={{ animationDelay: '2s' }}></div>
 
-            <nav className="sticky top-0 z-50 flex items-center justify-between w-full px-6 py-4 bg-white/50 dark:bg-white/5 backdrop-blur-xl border-b border-black/10 dark:border-white/10 shadow-lg transition-all duration-300">
-                <Link href="/dashboard" className="text-2xl font-extrabold tracking-tight hover:opacity-80 transition-opacity">
-                    Finance<span className="bg-gradient-to-r from-blue-400 via-purple-400 to-purple-600 bg-clip-text text-transparent text-3xl">Tracker</span>
+            <nav className="sticky top-0 z-50 flex items-center justify-between w-full px-3 sm:px-6 py-3 sm:py-4 bg-white/50 dark:bg-white/5 backdrop-blur-xl border-b border-black/10 dark:border-white/10 shadow-lg transition-all duration-300">
+                <Link href="/dashboard" className="text-lg sm:text-2xl font-extrabold tracking-tight hover:opacity-80 transition-opacity whitespace-nowrap">
+                    Finance<span className="bg-linear-to-r from-blue-400 via-purple-400 to-purple-600 bg-clip-text text-transparent text-xl sm:text-3xl">Tracker</span>
                 </Link>
-                <div className="flex items-center justify-center gap-2 md:gap-6 font-semibold">
+                <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-6 font-semibold min-w-0">
                     <div className="hidden md:flex gap-1 bg-black/5 dark:bg-black/20 p-1 rounded-full border border-black/5 dark:border-white/5 mr-4 transition-colors">
                         {navLinks.map((link) => (
                             <Link 
@@ -61,7 +61,7 @@ export default function MainLayout({ children }) {
                         ))}
                     </div>
                     
-                    <div className="flex items-center gap-4 border-l border-black/10 dark:border-white/10 pl-4 transition-colors">
+                    <div className="flex items-center gap-2 sm:gap-4 border-l border-black/10 dark:border-white/10 pl-2 sm:pl-4 transition-colors">
                         <ThemeToggle />
                         {user && (
                             <span className="text-sm font-medium text-gray-600 dark:text-gray-300 hidden sm:block">
@@ -70,7 +70,7 @@ export default function MainLayout({ children }) {
                         )}
                         <button 
                             onClick={handleLogOut} 
-                            className="bg-black/5 dark:bg-white/10 hover:bg-red-500/80 border border-black/10 dark:border-white/10 hover:border-red-500 text-gray-900 dark:text-white font-semibold py-1.5 px-5 rounded-full transition-all duration-300 cursor-pointer shadow-sm text-sm"
+                            className="bg-black/5 dark:bg-white/10 hover:bg-red-500/80 border border-black/10 dark:border-white/10 hover:border-red-500 text-gray-900 dark:text-white font-semibold py-1.5 px-3 sm:px-5 rounded-full transition-all duration-300 cursor-pointer shadow-sm text-xs sm:text-sm whitespace-nowrap"
                         >
                             Logout
                         </button>
@@ -78,12 +78,12 @@ export default function MainLayout({ children }) {
                 </div>
             </nav>
             
-            <div className="md:hidden flex justify-center gap-1 bg-white/50 dark:bg-white/5 border-b border-black/10 dark:border-white/10 p-2 z-40 backdrop-blur-md transition-colors">
+            <div className="md:hidden flex justify-center gap-1 bg-white/50 dark:bg-white/5 border-b border-black/10 dark:border-white/10 px-2 py-2 z-40 backdrop-blur-md transition-colors overflow-x-auto">
                 {navLinks.map((link) => (
                      <Link 
                          key={link.name} 
                          href={link.path} 
-                         className={`px-3 py-1.5 rounded-full text-xs transition-all duration-300 ${pathname === link.path ? 'bg-white dark:bg-white/10 text-black dark:text-white shadow-md' : 'text-gray-600 dark:text-gray-400'}`}
+                         className={`px-3 py-1.5 rounded-full text-xs transition-all duration-300 whitespace-nowrap ${pathname === link.path ? 'bg-white dark:bg-white/10 text-black dark:text-white shadow-md' : 'text-gray-600 dark:text-gray-400'}`}
                      >
                          {link.name}
                      </Link>

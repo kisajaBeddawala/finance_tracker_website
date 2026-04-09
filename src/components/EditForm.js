@@ -87,7 +87,7 @@ export default function EditForm({ data, onClose, setTransactions }) {
 
                     <div className="flex flex-col gap-1">
                         <label htmlFor="edit-date" className="text-xs font-semibold text-gray-600 dark:text-gray-400 ml-1">Date</label>
-                        <input type='date' id="edit-date" className='bg-gray-50 dark:bg-black/20 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white rounded-xl py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all min-h-[50px] appearance-none' value={date} onChange={(e) => setDate(e.target.value)} />
+                        <input type='date' id="edit-date" className='bg-gray-50 dark:bg-black/20 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white rounded-xl py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all min-h-12.5 appearance-none' value={date} onChange={(e) => setDate(e.target.value)} />
                     </div>
                     
                     <div className="flex justify-end gap-3 mt-4">
